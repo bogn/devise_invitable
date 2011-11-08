@@ -128,10 +128,10 @@ module Devise
           if invitable.new_record?
             invitable.errors.clear if invitable.email.try(:match, Devise.email_regexp)
           else
+            invitable.valid? if self.validate_on_invite
             invitable.errors.add(invite_key, :taken) unless invitable.invited? && self.resend_invitation
           end
-
-          if self.validate_on_invite || invitable.errors.empty?
+          if invitable.errors.empty?
             yield invitable if block_given?
             mail = invitable.invite!
           end
